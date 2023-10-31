@@ -6,41 +6,56 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     @IBOutlet weak var tableView: UITableView!
-    var cryptosList = [Crypto]()
+    let cryptoVM = CryptoVModel()
+    let disposeBag = DisposeBag()
+    
+    var cryptoList = [Crypto]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-      
+        
         tableView.delegate = self
         tableView.dataSource = self
         
-        let url = URL(string: "https://raw.githubusercontent.com/atilsamancioglu/K21-JSONDataSet/master/crypto.json")!
-        WebService().downloadCurrencies(url: url) { result in
-            switch result {
-            case .success(let cryptos):
-                self.cryptosList = cryptos
-                DispatchQueue.main.async{
-                    self.tableView.reloadData()
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
+        
+        setupBindings()
+        cryptoVM.requestData()
     }
-
+    
+    
+    private func setupBindings() {
+        cryptoVM.error.observe(on: MainScheduler.asyncInstance).subscribe { errorString in
+            print(errorString)
+        }.disposed(by: disposeBag)
+        
+        
+    
+        cryptoVM
+            .cryptos
+            .observe(on: MainScheduler.asyncInstance)
+            .subscribe { cryptos in
+            self.cryptoList = cryptos
+                self.tableView.reloadData()
+            }.disposed(by: disposeBag)
+        
+    }
+    
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cryptosList.count
+        return cryptoList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         var content = cell.defaultContentConfiguration()
-        content.text = cryptosList[indexPath.row].currency
-        content.secondaryText = cryptosList[indexPath.row].price
+        content.text = cryptoList[indexPath.row].currency
+        content.secondaryText = cryptoList[indexPath.row].price
         cell.contentConfiguration = content
         return cell
     }
