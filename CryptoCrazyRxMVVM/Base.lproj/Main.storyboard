@@ -20,6 +20,10 @@
                                 <rect key="frame" x="0.0" y="144" width="414" height="718"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="0gW-ad-MZH">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -32,6 +36,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Crypto List" id="GAK-er-bse"/>
                     <connections>
+                        <outlet property="activity" destination="0gW-ad-MZH" id="XM4-55-hoh"/>
                         <outlet property="tableView" destination="sBl-FS-Ix4" id="54Y-ZD-0ND"/>
                     </connections>
                 </viewController>

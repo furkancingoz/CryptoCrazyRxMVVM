@@ -11,6 +11,7 @@ import RxCocoa
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    @IBOutlet weak var activity: UIActivityIndicatorView!
     @IBOutlet weak var tableView: UITableView!
     let cryptoVM = CryptoVModel()
     let disposeBag = DisposeBag()
@@ -30,19 +31,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     private func setupBindings() {
+        cryptoVM.loading.bind(to: self.activity.rx.isAnimating).disposed(by: disposeBag)
+        
+        
         cryptoVM.error.observe(on: MainScheduler.asyncInstance).subscribe { errorString in
             print(errorString)
         }.disposed(by: disposeBag)
+
+//        cryptoVM
+//            .cryptos
+//            .observe(on: MainScheduler.asyncInstance)
+//            .subscribe { cryptos in
+//            self.cryptoList = cryptos
+//                self.tableView.reloadData()
+//            }.disposed(by: disposeBag)
         
-        
-    
-        cryptoVM
-            .cryptos
-            .observe(on: MainScheduler.asyncInstance)
-            .subscribe { cryptos in
-            self.cryptoList = cryptos
-                self.tableView.reloadData()
-            }.disposed(by: disposeBag)
         
     }
     
